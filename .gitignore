@@ -15,6 +15,7 @@ docs/
 deployments/
 # files
 *.env
+.env
 *.log
 *.tsbuildinfo
 coverage.json

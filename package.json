@@ -16,7 +16,8 @@
     "dotenv": "8.2.0",
     "hardhat-preprocessor": "0.1.2",
     "ethereum-waffle": "3.2.0",
-    "typechain": "4.0.1"
+    "typechain": "4.0.1",
+    "hardhat-typechain": "0.3.4"
   },
   "devDependencies": {
     "@commitlint/cli": "9.1.2",
@@ -44,7 +45,6 @@
     "hardhat-docgen": "1.0.3",
     "hardhat-gas-reporter": "1.0.4",
     "hardhat-prettier": "0.0.1",
-    "hardhat-typechain": "0.3.4",
     "husky": "5.0.9",
     "leafleth": "0.0.9",
     "prettier": "2.2.1",

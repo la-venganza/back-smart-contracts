@@ -1,1 +1,1 @@
-web: npm install typescript && npm run deploy-kovan && npm run
+web: npm run deploy-kovan && npm run

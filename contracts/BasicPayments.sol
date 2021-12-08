@@ -63,7 +63,7 @@ contract BasicPayments is Ownable {
         require(address(this).balance >= availableAmount, "not enough balance");
         require(amount > 0, "cannot send 0 weis");
         teacherAccounts[teacher] = teacherAccounts[teacher].add(amount);
-        emit teacherPayed(teacher, amount);
+        emit TeacherPayed(teacher, amount);
     }
 
     /**

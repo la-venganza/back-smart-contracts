@@ -12,25 +12,17 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
     @notice This contract allows you to track payments made to it 
     @dev This is an academic contract made for didactic purposes. DO NOT USE THIS IN PRODUCTION
  */
-contract BasicPayments is Ownable {
+contract BasicPaymentsOld is Ownable {
     using SafeMath for uint256;
 
     event PaymentMade(address indexed receiver, uint256 amount);
-    event TeacherPayed(address indexed receiver, uint256 amount);
+
     event DepositMade(address indexed sender, uint256 amount);
 
     /**
         @notice Mapping of payments sent to an address
      */
     mapping(address => uint256) public sentPayments;
-
-    mapping(address => uint256) public teacherAccounts;
-
-    uint256 public availableAmount;
-
-    constructor() Ownable() {
-        availableAmount = 0;
-    }
 
     /**
         @notice Function to receive payments
@@ -48,22 +40,15 @@ contract BasicPayments is Ownable {
         Fails if value sent is greater than the balance the contract has
         Fails if not called by the owner
         @dev updates sentPayments mapping
-        @param teacher Address that will receive the payment
+        @param receiver Address that will receive the payment
+        @param amount Amount to be sent
      */
-    function withdraw(address payable teacher) external onlyOwner {
-        require(teacherAccounts[teacher] > 0, "cannot withdraw 0 weis");
-        uint256 amount = teacherAccounts[teacher];
-        emit PaymentMade(teacher, amount);
-        teacherAccounts[teacher] = 0;
-        (bool success, ) = teacher.call{ value: amount }("");
-        require(success, "withdraw failed");
-    }
-
-    function payTeacher(address teacher, uint256 amount) external onlyOwner {
-        require(address(this).balance >= availableAmount, "not enough balance");
+    function sendPayment(address payable receiver, uint256 amount) external onlyOwner {
+        require(address(this).balance >= amount, "not enough balance");
         require(amount > 0, "cannot send 0 weis");
-        teacherAccounts[teacher] = teacherAccounts[teacher].add(amount);
-        emit teacherPayed(teacher, amount);
+        emit PaymentMade(receiver, amount);
+        (bool success, ) = receiver.call{ value: amount }("");
+        require(success, "payment failed");
     }
 
     /**
@@ -82,7 +67,6 @@ contract BasicPayments is Ownable {
     function _deposit(address sender, uint256 amount) internal {
         require(amount > 0, "did not send any value");
         sentPayments[sender] = sentPayments[sender].add(amount);
-        availableAmount = availableAmount + amount;
         emit DepositMade(sender, amount);
     }
 }

@@ -31,7 +31,7 @@ The following endpoints are available:
 - Get wallet: GET /wallet/:id:
 - Deposit ethers into the Smart contract: POST /deposit - Body params: senderId(integer), amountInEthers(string)
 - Get deposit receipt: GET /deposit/:txHash:
-
+- payTeacher: post /payTeacher - Body params: senderId(integer), amountInEthers(string), teacherId()
 ### Usage example
 
 ```sh

@@ -14,6 +14,14 @@ Once you have that in place, you can install the dependencies with npm through
 
 This is a minimum project that will serve as a guide to help students to do the rest of the integration
 
+
+### start Docker
+
+Go into app and run 'npm start'
+docker-compose build
+docker-compose up
+
+
 ### Start process
 
 To start the process, after you installed the dependencies and deployed the smart contracts to kovan, you can run

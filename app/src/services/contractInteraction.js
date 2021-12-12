@@ -55,7 +55,7 @@ const payTeacher = ({ config }) => async (senderWallet, teacherWallet, amountToS
           amountSent: firstEvent.args.amount,
         };
       } else {
-        console.error(`Payment not created in tx ${tx.hash}`);
+        console.error(`teacher not payed ${tx.hash}`);
       }
     },
     error => {

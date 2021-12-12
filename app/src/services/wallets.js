@@ -11,13 +11,12 @@ const getDeployerWallet = ({ config }) => () => {
 };
 
 const createWallet = () => async (userId) => {
+  if (accounts.hasOwnProperty(userId)){
+    throw new idInUseError(userId);
+  }
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
   // This may break in some environments, keep an eye on it
   const wallet = ethers.Wallet.createRandom().connect(provider);
-  if (accounts.hasOwnProperty(userId)){
-    console.log("is in accounts")
-    throw new idInUseError(userId);
-  }
   console.log("is not in accounts")
 
   accounts[userId] = {
@@ -40,14 +39,42 @@ const getWalletData = () => userId => {
   if (!accounts.hasOwnProperty(userId)){
     throw new walletNotFound(userId);
   }
-  return accounts[userId];
+  const result = {
+    id: userId,
+    address:   accounts[userId].address
+  };
+  return result;
 };
 
-const getWallet = ({}) => index => {
+const getWallet = ({}) => userId => {
+  console.log(userId);
+
+  if (!accounts.hasOwnProperty(userId)){
+    console.log(userId);
+
+    throw new walletNotFound(userId);
+  }
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
 
-  return new ethers.Wallet(accounts[index - 1].privateKey, provider);
+  return new ethers.Wallet(accounts[userId].privateKey, provider);
 };
+
+
+const getWalletBalance = () => async (userId) => {
+  console.log(userId)
+  if (!accounts.hasOwnProperty(userId)){
+    throw new walletNotFound(userId);
+  }
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+  // This may break in some environments, keep an eye on it
+  const balance = await provider.getBalance( accounts[userId].address);
+  const result = {
+    address :  accounts[userId].address,
+    balance : ethers.utils.formatEther(balance)
+  }
+  return result;
+};
+
 
 module.exports = ({ config }) => ({
   createWallet: createWallet({ config }),
@@ -55,4 +82,6 @@ module.exports = ({ config }) => ({
   getWalletsData: getWalletsData({ config }),
   getWalletData: getWalletData({ config }),
   getWallet: getWallet({ config }),
+  getWalletBalance: getWalletBalance({ config }),
+
 });

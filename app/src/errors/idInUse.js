@@ -10,7 +10,7 @@ class idInUse extends Error {
     
         this.name = 'idInUse'
         // Información de depuración personalizada
-        this.message = "user id " + userId + "is already in use"
+        this.message = "user id " + userId + " is already in use"
         this.status = status
         this.date = new Date()
     }

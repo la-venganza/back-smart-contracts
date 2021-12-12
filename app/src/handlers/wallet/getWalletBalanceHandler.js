@@ -13,8 +13,8 @@ function schema() {
 }
 
 function handler({ walletService }) {
-  return async function (req, reply) {    
-    const body = await walletService.createWallet(req.params.userId);
+  return async function (req, reply) {
+    const body = await walletService.getWalletBalance(req.params.userId);
     return reply.code(200).send(body);
   };
 }

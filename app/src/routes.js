@@ -1,9 +1,9 @@
-const getWalletData = require("./handlers/getWalletHandler");
-const getWalletsData = require("./handlers/getWalletsHandler");
-const createWallet = require("./handlers/createWalletHandler");
-const createDeposit = require("./handlers/createDepositHandler");
-const payTeacher = require("./handlers/payTeacherHandler");
-const getDeposit = require("./handlers/getDepositHandler");
+const getWalletData = require("./handlers/wallet/getWalletHandler");
+const getWalletsData = require("./handlers/wallet/getWalletsHandler");
+const createWallet = require("./handlers/wallet/createWalletHandler");
+const createDeposit = require("./handlers/deposit/createDepositHandler");
+const payTeacher = require("./handlers/contract/payTeacherHandler");
+const getDeposit = require("./handlers/deposit/getDepositHandler");
 
 function getWalletDataRoute({ services, config }) {
   return {

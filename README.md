@@ -57,7 +57,7 @@ content-type: application/json; charset=utf-8
     "privateKey": "0x67bb00f89f7b50f9e2924e423d00889c627b9acdc20b738ce00ccdcf6e4b8da0"
 }
 
-$ http POST http://localhost:3000/wallet
+$ http POST http://localhost:3000/wallet userId= "asldkfjlk3434jk4k5j3k4j"
 HTTP/1.1 200 OK
 Connection: keep-alive
 Date: Sun, 08 Aug 2021 19:26:54 GMT
@@ -66,8 +66,8 @@ content-length: 145
 content-type: application/json; charset=utf-8
 
 {
+    "id": "asldkfjlk3434jk4k5j3k4j",
     "address": "0x6698F9b4c67AeDAcd728297F2bF9eC15993398a4",
-    "id": 2,
     "privateKey": "0x7d7b4134704871ea90bc417a9fb21d8e643e076bd67f1253189e75181258c500"
 }
 

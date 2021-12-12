@@ -4,7 +4,7 @@ function schema() {
       type: "object",
       properties: {
         senderId: {
-          type: "integer",
+          type: "string",
         },
         amountInEthers: {
           type: "string",

@@ -1,5 +1,7 @@
 const ethers = require("ethers");
-const accounts = [];
+const accounts = {};
+const idInUseError = require('../errors/idInUse');
+const walletNotFound = require("../errors/walletNotFound");
 
 const getDeployerWallet = ({ config }) => () => {
   const provider = new ethers.providers.InfuraProvider(config.network, config.infuraApiKey);
@@ -8,18 +10,23 @@ const getDeployerWallet = ({ config }) => () => {
   return wallet;
 };
 
-const createWallet = () => async () => {
+const createWallet = () => async (userId) => {
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
   // This may break in some environments, keep an eye on it
   const wallet = ethers.Wallet.createRandom().connect(provider);
-  accounts.push({
+  if (accounts.hasOwnProperty(userId)){
+    console.log("is in accounts")
+    throw new idInUseError(userId);
+  }
+  console.log("is not in accounts")
+
+  accounts[userId] = {
     address: wallet.address,
     privateKey: wallet.privateKey,
-  });
+  };
   const result = {
-    id: accounts.length,
+    id: userId,
     address: wallet.address,
-    privateKey: wallet.privateKey,
   };
   return result;
 };
@@ -28,8 +35,12 @@ const getWalletsData = () => () => {
   return accounts;
 };
 
-const getWalletData = () => index => {
-  return accounts[index - 1];
+const getWalletData = () => userId => {
+  console.log(userId);
+  if (!accounts.hasOwnProperty(userId)){
+    throw new walletNotFound(userId);
+  }
+  return accounts[userId];
 };
 
 const getWallet = ({}) => index => {

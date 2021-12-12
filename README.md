@@ -14,6 +14,7 @@ Once you have that in place, you can install the dependencies with npm through
 
 This is a minimum project that will serve as a guide to help students to do the rest of the integration
 
+### set unique database name on .env
 
 ### start Docker
 

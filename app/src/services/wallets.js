@@ -41,18 +41,15 @@ const getWalletData = () =>  async (userId) => {
   return result;
 };
 
-// const getWallet = ({}) => userId => {
-//   console.log(userId);
+const getWallet = ({}) => async (userId) => {
+  const wallet = await walletRepository.getById(userId)
+  if (!wallet){
+    throw new walletNotFound(userId);
+  }
+  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
 
-//   if (!accounts.hasOwnProperty(userId)){
-//     console.log(userId);
-
-//     throw new walletNotFound(userId);
-//   }
-//   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
-
-//   return new ethers.Wallet(accounts[userId].privateKey, provider);
-// };
+  return new ethers.Wallet(wallet.privateKey, provider);
+};
 
 
 const getWalletBalance = () => async (userId) => {
@@ -76,7 +73,7 @@ module.exports = ({ config }) => ({
   getDeployerWallet: getDeployerWallet({ config }),
   getWalletsData: getWalletsData({ config }),
   getWalletData: getWalletData({ config }),
-  // getWallet: getWallet({ config }),
+  getWallet: getWallet({ config }),
   getWalletBalance: getWalletBalance({ config }),
 
 });

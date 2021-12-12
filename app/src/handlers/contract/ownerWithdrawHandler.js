@@ -1,23 +1,20 @@
 function schema() {
   return {
-    params: {
+    body: {
       type: "object",
       properties: {
-        senderId: {
-          type: "string",
-        },
-        amountInEthers: {
+        amount: {
           type: "string",
         },
       },
     },
-    required: ["senderId", "amountInEthers"],
+    required: ["teacherId", "recieverAddress"],
   };
 }
 
 function handler({ contractInteraction, walletService }) {
   return async function (req) {
-    return contractInteraction.deposit(await walletService.getWallet(req.body.senderId), req.body.amountInEthers);
+    return contractInteraction.ownerWithdraw(await walletService.getDeployerWallet(),req.body.amount );
   };
 }
 

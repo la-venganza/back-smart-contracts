@@ -20,7 +20,7 @@ function schema() {
 
 function handler({ contractInteraction, walletService }) {
   return async function (req) {
-    return contractInteraction.payTeacher(walletService.getDeployerWallet(),walletService.getWallet(req.body.teacherId), req.body.amountInEthers);
+    return contractInteraction.payTeacher(walletService.getDeployerWallet(),await walletService.getWallet(req.body.teacherId), req.body.amountInEthers);
   };
 }
 

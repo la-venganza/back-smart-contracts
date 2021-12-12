@@ -56,21 +56,22 @@ contract BasicPayments is Ownable {
     function teacherWithdraw(address payable reciever) external {
         uint256 amount = teacherAccounts[msg.sender];
         require(amount > 0, "cannot withdraw 0 weis");
-        emit TeacherWithdraw(msg.sender, amount);
+        emit TeacherWithdraw(reciever, amount);
         teacherAccounts[msg.sender] = 0;
+        commitedAmount = commitedAmount - amount;
         (bool success, ) = reciever.call{ value: amount }("");
         require(success, "withdraw failed");
     }
 
     function withdraw(uint256 extractionAmount) external onlyOwner{
-        require(getAvailableBalance() < extractionAmount, "no enough funds");
+        require(getAvailableBalance() >= extractionAmount, "no enough funds");
         emit WithdrawMade(extractionAmount);
         (bool success, ) = owner().call{ value: extractionAmount }("");
         require(success, "withdraw failed");
     }
 
     function payTeacher(address teacher, uint256 amount) external onlyOwner {
-        require(getAvailableBalance() < amount, "not enough balance");
+        require(getAvailableBalance() > amount, "not enough balance");
         require(amount > 0, "cannot send 0 weis");
         teacherAccounts[teacher] = teacherAccounts[teacher].add(amount);
         commitedAmount = commitedAmount + amount;

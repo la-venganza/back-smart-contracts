@@ -3,6 +3,12 @@ const getWalletsData = require("./handlers/wallet/getWalletsHandler");
 const createWallet = require("./handlers/wallet/createWalletHandler");
 const createDeposit = require("./handlers/deposit/createDepositHandler");
 const getWalletBalance = require("./handlers/wallet/getWalletBalanceHandler");
+const getTeacherBalance = require("./handlers/contract/getTeacherBalanceHandler");
+const getAvailableBalance = require("./handlers/contract/getAvailableBalanceHandler");
+
+const teacherWithdraw = require("./handlers/contract/teacherWithdrawHandler");
+const ownerWithdraw = require("./handlers/contract/ownerWithdrawHandler");
+
 const payTeacher = require("./handlers/contract/payTeacherHandler");
 const getDeposit = require("./handlers/deposit/getDepositHandler");
 
@@ -60,6 +66,24 @@ function payTeacherRoute({ services, config }) {
   };
 }
 
+function getTeacherBalanceRoute({ services, config }) {
+  return {
+    method: "GET",
+    url: "/teacherBalance/:teacherId",
+    schema: getTeacherBalance.schema(config),
+    handler: getTeacherBalance.handler({ config, ...services }),
+  };
+}
+
+function getAvailableBalanceRoute({ services, config }) {
+  return {
+    method: "GET",
+    url: "/availableBalance",
+    schema: getAvailableBalance.schema(config),
+    handler: getAvailableBalance.handler({ config, ...services }),
+  };
+}
+
 function getDepositRoute({ services, config }) {
   return {
     method: "GET",
@@ -69,4 +93,22 @@ function getDepositRoute({ services, config }) {
   };
 }
 
-module.exports = [getWalletDataRoute, getWalletsDataRoute, getWalletBalanceroute, createWalletRoute, createDepositRoute, getDepositRoute, payTeacherRoute];
+function teacherWithdrawRoute({ services, config }) {
+  return {
+    method: "POST",
+    url: "/teacherWithdraw",
+    schema: teacherWithdraw.schema(config),
+    handler: teacherWithdraw.handler({ config, ...services }),
+  };
+}
+
+function ownerWithdrawRoute({ services, config }) {
+  return {
+    method: "POST",
+    url: "/ownerWithdraw",
+    schema: ownerWithdraw.schema(config),
+    handler: ownerWithdraw.handler({ config, ...services }),
+  };
+}
+
+module.exports = [getWalletDataRoute, ownerWithdrawRoute, getAvailableBalanceRoute, getWalletsDataRoute,teacherWithdrawRoute , getWalletBalanceroute, createWalletRoute,getTeacherBalanceRoute, createDepositRoute, getDepositRoute, payTeacherRoute];

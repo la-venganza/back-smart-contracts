@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 
-const uri = process.env.DATABASE_lINK;
+const uri = process.env.DATABASE_LINK;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //next lines help with not having to craete a db connection pool.

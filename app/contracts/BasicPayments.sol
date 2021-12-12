@@ -17,7 +17,10 @@ contract BasicPayments is Ownable {
 
     event PaymentMade(address indexed receiver, uint256 amount);
     event TeacherPayed(address indexed receiver, uint256 amount);
+    event TeacherWithdraw(address indexed receiver, uint256 amount);
     event DepositMade(address indexed sender, uint256 amount);
+    event WithdrawMade(uint256 amount);
+
 
     /**
         @notice Mapping of payments sent to an address
@@ -26,10 +29,10 @@ contract BasicPayments is Ownable {
 
     mapping(address => uint256) public teacherAccounts;
 
-    uint256 public availableAmount;
+    uint256 public commitedAmount;
 
     constructor() Ownable() {
-        availableAmount = 0;
+        commitedAmount = 0;
     }
 
     /**
@@ -46,24 +49,39 @@ contract BasicPayments is Ownable {
         @notice Sends the specified amount to the specified address 
         Emits PaymentMade with the receiver and the amount as a parameter
         Fails if value sent is greater than the balance the contract has
-        Fails if not called by the owner
+        Can only extract from callers balance
         @dev updates sentPayments mapping
-        @param teacher Address that will receive the payment
+        @param reciever Address that will receive the payment
      */
-    function withdraw(address payable teacher) external onlyOwner {
-        require(teacherAccounts[teacher] > 0, "cannot withdraw 0 weis");
-        uint256 amount = teacherAccounts[teacher];
-        emit PaymentMade(teacher, amount);
-        teacherAccounts[teacher] = 0;
-        (bool success, ) = teacher.call{ value: amount }("");
+    function teacherWithdraw(address payable reciever) external {
+        uint256 amount = teacherAccounts[msg.sender];
+        require(amount > 0, "cannot withdraw 0 weis");
+        emit TeacherWithdraw(msg.sender, amount);
+        teacherAccounts[msg.sender] = 0;
+        (bool success, ) = reciever.call{ value: amount }("");
+        require(success, "withdraw failed");
+    }
+
+    function withdraw(uint256 extractionAmount) external onlyOwner{
+        require(getAvailableBalance() < extractionAmount, "no enough funds");
+        emit WithdrawMade(extractionAmount);
+        (bool success, ) = owner().call{ value: extractionAmount }("");
         require(success, "withdraw failed");
     }
 
     function payTeacher(address teacher, uint256 amount) external onlyOwner {
-        require(address(this).balance >= availableAmount, "not enough balance");
+        require(getAvailableBalance() < amount, "not enough balance");
         require(amount > 0, "cannot send 0 weis");
         teacherAccounts[teacher] = teacherAccounts[teacher].add(amount);
+        commitedAmount = commitedAmount + amount;
         emit TeacherPayed(teacher, amount);
+    }
+
+    function getTeacherBalance(address teacher) view public returns(uint256){
+        return teacherAccounts[teacher];
+    }
+    function getAvailableBalance() view public returns(uint256){
+        return address(this).balance - commitedAmount;
     }
 
     /**
@@ -82,7 +100,6 @@ contract BasicPayments is Ownable {
     function _deposit(address sender, uint256 amount) internal {
         require(amount > 0, "did not send any value");
         sentPayments[sender] = sentPayments[sender].add(amount);
-        availableAmount = availableAmount + amount;
         emit DepositMade(sender, amount);
     }
 }

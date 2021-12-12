@@ -34,10 +34,10 @@ keep in mind that you should have everything in config set before that.
 
 The following endpoints are available:
 
-- Create wallet: POST /wallet - No body 
-- Get wallets: GET /wallet
-- Get wallet: GET /wallet/:id:
+- Create wallet: POST /wallet/:userId
+- Get wallet: GET /wallet/:id
 - Deposit ethers into the Smart contract: POST /deposit - Body params: senderId(integer), amountInEthers(string)
+- get balance GET balance/:id
 - Get deposit receipt: GET /deposit/:txHash:
 - payTeacher: post /payTeacher - Body params: senderId(integer), amountInEthers(string), teacherId()
 ### Usage example

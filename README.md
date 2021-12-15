@@ -37,91 +37,120 @@ The following endpoints are available:
 
 - Create wallet: POST /wallet/:userId
 - Get wallet: GET /wallet/:id
-- Deposit ethers into the Smart contract: POST /deposit - Body params: senderId(integer), amountInEthers(string)
+- Deposit ethers into the Smart contract: POST /deposit -# Body params: senderId(integer), amountInEthers(string)
 - get balance GET balance/:id
 - Get deposit receipt: GET /deposit/:txHash:
 - payTeacher: post /payTeacher - Body params: senderId(integer), amountInEthers(string), teacherId()
 ### Usage example
 
-```sh
-$ http POST http://localhost:3000/wallet
-HTTP/1.1 200 OK
-Connection: keep-alive
-Date: Sun, 08 Aug 2021 19:26:53 GMT
-Keep-Alive: timeout=5
-content-length: 145
-content-type: application/json; charset=utf-8
+# endpoints
 
+## create wallet
+### path
+POST
+http://localhost:5000/wallet/:walletId
+
+### body
+### response
 {
-    "address": "0x7E039A00fFFD8d8C898e77e52351c799C99D3a2D",
-    "id": 1,
-    "privateKey": "0x67bb00f89f7b50f9e2924e423d00889c627b9acdc20b738ce00ccdcf6e4b8da0"
+  "address": "0x795E7855e140cD21e87A930109cB1d6ceeF1DEA1"
 }
 
-$ http POST http://localhost:3000/wallet userId= "asldkfjlk3434jk4k5j3k4j"
-HTTP/1.1 200 OK
-Connection: keep-alive
-Date: Sun, 08 Aug 2021 19:26:54 GMT
-Keep-Alive: timeout=5
-content-length: 145
-content-type: application/json; charset=utf-8
 
+## get wallet
+### path
+GET
+http://localhost:5000/wallet/:walletId
+
+### body
+### response
 {
-    "id": "asldkfjlk3434jk4k5j3k4j",
-    "address": "0x6698F9b4c67AeDAcd728297F2bF9eC15993398a4",
-    "privateKey": "0x7d7b4134704871ea90bc417a9fb21d8e643e076bd67f1253189e75181258c500"
+  "id": "testWallet",
+  "address": "0x96D99aFe1D22F97aB5be4C5baBaF51Fe8e1F1462"
 }
 
-$ http POST http://localhost:3000/deposit senderId=1 amountInEthers='0.01'          
-HTTP/1.1 200 OK
-Connection: keep-alive
-Date: Sun, 08 Aug 2021 19:27:38 GMT
-Keep-Alive: timeout=5
-content-length: 538
-content-type: application/json; charset=utf-8
 
+## get balance
+### path
+GET
+http://localhost:5000/balance/:walletId
+### body
+### response
 {
-    "chainId": 4,
-    "data": "0xd0e30db0",
-    "from": "0x7E039A00fFFD8d8C898e77e52351c799C99D3a2D",
-    "gasLimit": {
-        "hex": "0xb044",
-        "type": "BigNumber"
-    },
-    "gasPrice": {
-        "hex": "0x3b9aca08",
-        "type": "BigNumber"
-    },
-    "hash": "0x9f98447de34d3245ce1976956334336a6302befc4f204ac44a7cac0526caa82d",
-    "nonce": 0,
-    "r": "0xc78a2f0914988bb37e62c16ffb91ae0335d39fd3dc246fd0c269dbaf0b331589",
-    "s": "0x423f245bcc46c872404b43c34fcb789cb0d3befdd44ec928b96bb25a5a887762",
-    "to": "0x76b8DA0BB9b9981403586A574d10fA783f08Aa05",
-    "type": null,
-    "v": 44,
-    "value": {
-        "hex": "0x2386f26fc10000",
-        "type": "BigNumber"
-    }
+  "address": "0x795E7855e140cD21e87A930109cB1d6ceeF1DEA1",
+  "balance": "0.011747069999291796"
 }
 
-$ http GET http://localhost:3000/deposit/0x9f98447de34d3245ce1976956334336a6302befc4f204ac44a7cac0526caa82d
-HTTP/1.1 200 OK
-Connection: keep-alive
-Date: Sun, 08 Aug 2021 19:28:00 GMT
-Keep-Alive: timeout=5
-content-length: 121
-content-type: application/json; charset=utf-8
-
+## get teacher balance
+### path
+GET
+http://localhost:5000/teacherBalance/:teacherId
+### body
+### response
 {
-    "amountSent": {
-        "hex": "0x2386f26fc10000",
-        "type": "BigNumber"
-    },
-    "senderAddress": "0x7E039A00fFFD8d8C898e77e52351c799C99D3a2D"
+  "balance": "0.01"
 }
 
-```
+## get owner available balance
+### path
+GET
+http://localhost:5000/availableBalance
+
+### body
+### response
+{
+  "balance": "0.01"
+}
+
+
+##  pay teacher
+### path
+POST
+http://localhost:5000/payTeacher
+
+### body
+{
+	"teacherId": "FirstTeacher",
+	"amountInEthers": "0.008"
+}
+### response
+200 o 500
+
+##  deposit
+### path
+POST
+http://localhost:5000/deposit
+### body
+{
+	"senderId": "second",
+	"amountInEthers": "0.01"
+}
+### response
+200 o 500 y va con callback despues
+
+##  teacher withdraw
+### path
+POST
+http://localhost:5000/teacherWithdraw
+### body
+{
+	"teacherId": "FirstTeacher",
+	"recieverAddress": "0x795E7855e140cD21e87A930109cB1d6ceeF1DEA1"
+}
+### response
+200 o 500 
+
+##  owner withdraw
+### path
+POST
+http://localhost:5000/ownerWithdraw### body
+{
+	"amount": "0.003"
+}
+### response
+200 o 500 
+
+
 
 
 ### Usage

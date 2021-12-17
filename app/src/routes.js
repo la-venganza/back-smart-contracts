@@ -5,6 +5,7 @@ const createDeposit = require("./handlers/deposit/createDepositHandler");
 const getWalletBalance = require("./handlers/wallet/getWalletBalanceHandler");
 const getTeacherBalance = require("./handlers/contract/getTeacherBalanceHandler");
 const getAvailableBalance = require("./handlers/contract/getAvailableBalanceHandler");
+const subscribe = require("./handlers/contract/subscribeHandler");
 
 const teacherWithdraw = require("./handlers/contract/teacherWithdrawHandler");
 const ownerWithdraw = require("./handlers/contract/ownerWithdrawHandler");
@@ -111,4 +112,13 @@ function ownerWithdrawRoute({ services, config }) {
   };
 }
 
-module.exports = [getWalletDataRoute, ownerWithdrawRoute, getAvailableBalanceRoute, getWalletsDataRoute,teacherWithdrawRoute , getWalletBalanceroute, createWalletRoute,getTeacherBalanceRoute, createDepositRoute, getDepositRoute, payTeacherRoute];
+function subscribeRoute({ services, config }) {
+  return {
+    method: "POST",
+    url: "/subscribe/:id",
+    schema: subscribe.schema(config),
+    handler: subscribe.handler({ config, ...services }),
+  };
+}
+
+module.exports = [getWalletDataRoute, subscribeRoute, ownerWithdrawRoute, getAvailableBalanceRoute, getWalletsDataRoute,teacherWithdrawRoute , getWalletBalanceroute, createWalletRoute,getTeacherBalanceRoute, createDepositRoute, getDepositRoute, payTeacherRoute];

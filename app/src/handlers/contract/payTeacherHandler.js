@@ -3,9 +3,6 @@ function schema() {
     params: {
       type: "object",
       properties: {
-        senderId: {
-          type: "string",
-        },
         teacherId: {
           type: "string",
         },

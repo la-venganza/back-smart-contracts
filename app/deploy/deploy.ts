@@ -10,7 +10,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const deployResult = await deploy("BasicPayments", {
     from: deployer,
     gasLimit: 4000000,
-    args: [],
+    args: [process.env.ERC20_ADDRESS],
   });
   console.log(`BasicPayments deployed at ${deployResult.address}`);
   return hre.network.live; // prevents re execution on live networks

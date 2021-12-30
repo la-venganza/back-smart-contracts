@@ -2,6 +2,8 @@ const ethers = require("ethers");
 const idInUseError = require('../errors/idInUse');
 const walletNotFound = require("../errors/walletNotFound");
 const walletRepository = require("../repositories/wallet")
+const config = require("../config");
+const contractInteraction = require("./contractInteraction")({config});
 
 const getDeployerWallet = ({ config }) => () => {
   const provider = new ethers.providers.InfuraProvider(config.network, config.infuraApiKey);
@@ -46,20 +48,18 @@ const getWallet = ({}) => async (userId) => {
   if (!wallet){
     throw new walletNotFound(userId);
   }
-  const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
+  const provider =  new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
 
   return new ethers.Wallet(wallet.privateKey, provider);
 };
 
 
-const getWalletBalance = () => async (userId) => {
-  const wallet = await walletRepository.getById(userId)
-  if (!wallet){
-    throw new walletNotFound(userId);
-  }
+const getWalletBalance = ({ config }) => async (wallet) => {
+
   const provider = new ethers.providers.InfuraProvider("kovan", process.env.INFURA_API_KEY);
   // This may break in some environments, keep an eye on it
-  const balance = await provider.getBalance( wallet.address);
+  contract = await contractInteraction.getERC20Contract(config,wallet )
+  const balance = await contract.balanceOf(wallet.address);
   const result = {
     address :  wallet.address,
     balance : ethers.utils.formatEther(balance)
@@ -75,5 +75,4 @@ module.exports = ({ config }) => ({
   getWalletData: getWalletData({ config }),
   getWallet: getWallet({ config }),
   getWalletBalance: getWalletBalance({ config }),
-
 });

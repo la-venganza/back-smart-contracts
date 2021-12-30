@@ -1,5 +1,4 @@
 const ethers = require("ethers");
-const walletService = require("./wallets");
 const transactionError = require("../errors/transactionError")
 
 const getContract = (config, wallet) => {
@@ -7,13 +6,22 @@ const getContract = (config, wallet) => {
   return new ethers.Contract(config.contractAddress, config.contractAbi, wallet);
 };
 
+const getERC20Contract = (config, wallet) => {
+  console.log(wallet);
+  console.log(config.contractAddress);
+  return new ethers.Contract(config.ERC20ContractAddress, config.ERC20Abi, wallet);
+};
+
 const deposits = {};
 
 const deposit = ({ config }) => async (senderWallet, amountToSend) => {
-  const basicPayments = await getContract(config, senderWallet);
-  const tx = await basicPayments.deposit({
-    value: await ethers.utils.parseEther(amountToSend).toHexString(),
-  });
+  const ERC20Contract = await getERC20Contract(config, senderWallet);
+  // const tx = await ERC20Contract.transfer({
+  //   _value: await ethers.utils.parseEther(amountToSend).toHexString(),
+  //   _to: config.contractAddress,
+  // });
+  console.log("contract addres: " + config.contractAddress)
+  const tx = await ERC20Contract.transfer(config.contractAddress, await ethers.utils.parseEther(amountToSend).toHexString())
   try{
     const receipt = await tx.wait(1);
     console.log("Transaction mined");
@@ -145,5 +153,6 @@ module.exports = dependencies => ({
   ownerWithdraw: ownerWithdraw(dependencies),
   teacherWithdraw: teacherWithdraw(dependencies),
   getTeacherBalance: getTeacherBalance(dependencies),
-  getAvailableBalance: getAvailableBalance(dependencies)
+  getAvailableBalance: getAvailableBalance(dependencies),
+  getERC20Contract
 });

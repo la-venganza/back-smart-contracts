@@ -5,6 +5,7 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 /**
     @title BasicPayments Contract
@@ -30,9 +31,11 @@ contract BasicPayments is Ownable {
     mapping(address => uint256) public teacherAccounts;
 
     uint256 public commitedAmount;
+    IERC20 public token;
 
-    constructor() Ownable() {
+    constructor(IERC20 stableToken) Ownable() {
         commitedAmount = 0;
+        token = stableToken;
     }
 
     /**
@@ -59,14 +62,14 @@ contract BasicPayments is Ownable {
         emit TeacherWithdraw(reciever, amount);
         teacherAccounts[msg.sender] = 0;
         commitedAmount = commitedAmount - amount;
-        (bool success, ) = reciever.call{ value: amount }("");
+        bool success = token.transfer(reciever, amount);
         require(success, "withdraw failed");
     }
 
     function withdraw(uint256 extractionAmount) external onlyOwner{
         require(getAvailableBalance() >= extractionAmount, "no enough funds");
         emit WithdrawMade(extractionAmount);
-        (bool success, ) = owner().call{ value: extractionAmount }("");
+        bool success  = token.transfer(owner(), extractionAmount);
         require(success, "withdraw failed");
     }
 
@@ -82,7 +85,7 @@ contract BasicPayments is Ownable {
         return teacherAccounts[teacher];
     }
     function getAvailableBalance() view public returns(uint256){
-        return address(this).balance - commitedAmount;
+        return token.balanceOf(address(this)) - commitedAmount;
     }
 
     /**
